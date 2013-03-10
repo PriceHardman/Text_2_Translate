@@ -59,6 +59,10 @@ GEM
     mime-types (1.21)
     multi_json (1.6.0)
     nokogiri (1.5.6)
+<<<<<<< HEAD
+    nokogiri (1.5.6-x86-mingw32)
+=======
+>>>>>>> 15ba7315b1e6a4d77686d8804ae9560b72453160
     polyglot (0.3.3)
     rack (1.4.5)
     rack-cache (1.2)

@@ -26,6 +26,9 @@ gem 'twilio-ruby'
 gem 'bing_translator'
 #gem 'openssl'
 
+gem "bing_translator", "~> 3.0.0"
+
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
