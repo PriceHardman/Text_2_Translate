@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 ['twilio-ruby','openssl','bing_translator'].each {|x| require x}
-=======
-require 'twilio-ruby'
-require 'bing_translator'
-require 'openssl'
->>>>>>> 15ba7315b1e6a4d77686d8804ae9560b72453160
 
 class UsersController < ApplicationController
 
@@ -28,7 +22,7 @@ def create
     @client.account.sms.messages.create(
         :from => '14155992671',
         :to => @user.phone,
-        :body => "Please text the message to translate in the following format :: For example:   '98508420 english french Hello, world!' ::"
+        :body => "Please text the message to translate in the following format: \'98508420 english french This will be translated.\' For help, text \'98508420 help\'" 
     )
 
     else
@@ -112,6 +106,13 @@ end
 
 end
 
+#if the user texts only the word "help", this will be sent back to them instead of a translation.
+def help_text
+  "To use Text 2 Translate, send a text formatted as follows: "+
+  "\"98508420 <from language> <to language> <text you wish to translate>\"\n"+ 
+  "For example:\"98508420 french english C'est la vie.\" Try as many languages as you want!"
+end
+
 def parse_raw_text(input)
   #This method parses the text of the SMS message.
 
@@ -121,6 +122,11 @@ def parse_raw_text(input)
 
   #First, parse the string of text into individual words in an array, using split
   words_array = input.split
+
+
+  ### If the text consists only of "<API PIN> help", return instructions
+  return help_text if words_array[2]=="help" 
+
 
   #For translation purposes, the text has three main parts: the from language, the to language, and the text to be translated.
   #Isolate the languages and covert them to their Bing API codes:
@@ -138,8 +144,11 @@ def parse_raw_text(input)
 end
 
 def translate_text(input) #this method takes a formatted string as input, and returns the translation.
-  translator = BingTranslator.new('RubyTranslate','b23Kbt0semubZJRHJz0sFH0yfns+plDk/F9gTza0GKs=') #instantiate the translator
+  translator = BingTranslator.new('RubyTranslate',
+                                  'b23Kbt0semubZJRHJz0sFH0yfns+plDk/F9gTza0GKs=') #instantiate the translator
   sms = parse_raw_text(input) #preprocess the text
-  output = translator.translate sms[:text_to_be_translated], :from => sms[:from_language], :to => sms[:to_language]
+  output = translator.translate sms[:text_to_be_translated], 
+                                :from => sms[:from_language], 
+                                :to => sms[:to_language]
   return output
 end
